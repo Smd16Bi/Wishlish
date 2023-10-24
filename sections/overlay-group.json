@@ -1,0 +1,15 @@
+{
+  "name": "Overlay",
+  "type": "aside",
+  "sections": {
+    "overlay-wishlish": {
+      "type": "overlay-wishlish",
+      "settings": {
+
+      }
+    }
+  },
+  "order": [
+    "overlay-wishlish"
+  ]
+}
