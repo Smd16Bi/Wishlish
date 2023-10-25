@@ -35,8 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const currentId = this.remove.getAttribute("data-id-product");
       const localObj = wishlistApp.getLocalStore();
       const removeItem = localObj.filter(el => Number(el.id) !== Number(currentId));
-      wishlistApp.setLocalStore(removeItem);   
-      wishlistApp.renderItem();  
+      wishlistApp.setLocalStore(removeItem);
+      wishlistApp.renderItem();
+      wishlistApp.productSnippet?.classList.remove("is-added");
     }
   }
 
@@ -45,14 +46,16 @@ document.addEventListener("DOMContentLoaded", function () {
     static counterItem = 0;
     constructor(container) {
       this.container = container;
-      this.iconHeaderSnippet = document.querySelector(".header--wishlist-snipet");
-      this.productSnippet = document.querySelector(".form-wishlist");
       this.iconClose = this.container.querySelector(".icon-close");
       this.header = this.container.querySelector(".wishlish-header");
       this.empty = this.container.querySelector(".wishlish-empty");
       this.main = this.container.querySelector(".wishlish-main");
       this.footer = this.container.querySelector(".wishlish-footer");
       this.overlay = this.container.querySelector(".wishlish-overlay");
+
+      this.iconHeaderSnippet = document.querySelector(".header--wishlist-snipet");
+      this.productSnippet = document.querySelector(".form-wishlist");
+      this.iconSnippet = document.querySelectorAll(".wishlist-icon-btn");
 
       this.checkIsEmpty();
       this.createLocalStore();
@@ -65,6 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
       if (this.productSnippet) {
         this.checkIsAdded();
         this.productSnippet.querySelector(".btn-wishlist").addEventListener("click", this.changeItem.bind(this));
+      }
+
+      if (this.iconSnippet.length != 0) {
+        this.iconSnippet.forEach((btn, index) => {
+          this.checkIsAdded(btn)
+          btn.addEventListener("click", this.changeItem.bind(this));
+        })
       }
 
       this.renderItem();
@@ -81,15 +91,25 @@ document.addEventListener("DOMContentLoaded", function () {
       document.body.classList.remove("overflow-hidden");
     }
 
-    changeItem() {
-      const jsonObj = JSON.parse(this.productSnippet.querySelector("#product-wishlish").innerHTML);
-      const { featured_image, title, id } = jsonObj;
+    changeItem(event) {
+      const target = event.target;
+      const isIconSnipet = target.classList.contains("_wishlist-icon-btn");
+      const currentIconWishlist = isIconSnipet ? target : this.productSnippet;
+
+      const jsonObj = JSON.parse(
+        isIconSnipet
+          ? target.querySelector("[data-json-product]").innerHTML
+          : this.productSnippet.querySelector("#product-wishlish").innerHTML
+      );
+
+      const { featured_image, title, id, link } = jsonObj;
       const item = {
         featured_image,
         title,
         id,
-        link: window.location.pathname
+        link
       }
+
       const localObj = this.getLocalStore();
       const isAdd = localObj.some(el => Number(el.id) === Number(id));
       if (!isAdd) {
@@ -100,7 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const removeItem = localObj.filter(el => Number(el.id) !== Number(id));
         this.setLocalStore(removeItem);
       };
-      this.productSnippet.classList.toggle("is-added", !isAdd);
+
+      currentIconWishlist.classList.toggle("is-added", !isAdd);
+
       this.checkIsEmpty();
       this.renderItem();
     }
@@ -115,12 +137,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    checkIsAdded() {
-      const { id } = JSON.parse(this.productSnippet.querySelector("#product-wishlish").innerHTML);
+    checkIsAdded(btn) {
+      const isIconSnipet = btn ? true : false;
+      const currentIconWishlist = isIconSnipet ? btn : this.productSnippet;
+      const { id } = JSON.parse(
+        isIconSnipet
+          ? btn.querySelector("[data-json-product]").innerHTML
+          : this.productSnippet.querySelector("#product-wishlish").innerHTML
+      );
+
       const currentLocal = this.getLocalStore();
       const isAdd = currentLocal.some(el => Number(el.id) === Number(id));
-      this.productSnippet.classList.toggle("is-added", isAdd);
+      currentIconWishlist.classList.toggle("is-added", isAdd);
     }
+
 
     createLocalStore() {
       if (localStorage.getItem("wislistapp")) return;
@@ -145,6 +175,8 @@ document.addEventListener("DOMContentLoaded", function () {
       for (const item of currentLocal) {
         let newItem = new WishItem(bodyApp, item);
       }
+
+      this.checkIsEmpty();
     }
 
   }

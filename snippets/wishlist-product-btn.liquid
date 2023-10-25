@@ -16,7 +16,12 @@
   </a>
 
   <script type="application/ld+json" id="product-wishlish">
-    {{ product | json }}
+    {
+      "featured_image":"{{product.featured_image | img_url: 'master'}}",
+      "title": "{{product.title}}",
+      "id":" {{product.id}}",
+      "link": "{{product.url}}"
+    }
   </script>
 
 </div>
