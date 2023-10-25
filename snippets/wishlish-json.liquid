@@ -1,0 +1,13 @@
+{%- comment -%}
+  In this snippet, you need to give the product object.
+  {% render "wishlish-json" product: value product %}
+{%- endcomment -%}
+
+<script type="application/ld+json" data-json-product>
+  {
+    "featured_image":"{{product.featured_image | img_url: 'master'}}",
+    "title": "{{product.title}}",
+    "id":" {{product.id}}",
+    "link": "{{product.url}}"
+  }
+</script>

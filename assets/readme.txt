@@ -6,6 +6,7 @@ section
   overlay-wishlish.liquid
   overlay-group.json
 
-sniper
+snipet
+ wishlish-icon-header.liquid
  wishlish.icon.liquid
  wishlist-product-btn.liquid

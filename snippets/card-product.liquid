@@ -35,7 +35,10 @@
       assign ratio = 1
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover">
+  <div>
+    {% render "wishlish-icon" product: card_product %}
+  </div>
+  <div class="card-wrapper product-card-wrapper  underline-links-hover">
     <div
       class="
         card card--{{ settings.card_style }}

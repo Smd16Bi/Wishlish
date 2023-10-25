@@ -170,3 +170,21 @@
   color: var(--color-text);
   font-size: var(--font-size-text);
 }
+
+/* Snipet icon btn */
+
+.wishlist-icon-btn {
+  display: inline-flex;
+  max-width: fit-content;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.wishlist-icon-btn.is-added svg {
+  fill: #000;
+}
+
+.wishlist-icon-btn svg {
+  pointer-events: none;
+}
