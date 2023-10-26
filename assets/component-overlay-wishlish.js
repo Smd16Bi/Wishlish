@@ -3,41 +3,39 @@ document.addEventListener("DOMContentLoaded", function () {
     constructor(container, obj) {
       this.container = container;
       this.obj = obj;
-      this.item = document.createElement("div");
-      this.title = document.createElement("h2");
-      this.img = document.createElement("img");
-      this.wrap = document.createElement("a");
-      this.remove = document.createElement("button");
-
-      this.wrap.href = this.obj.link;
-      this.title.innerHTML = `<span>${this.obj.title}</spna>`;
-      this.img.src = this.obj.featured_image;
-      this.remove.innerHTML = "Remove";
-      this.remove.setAttribute("data-id-product", this.obj.id);
-
-
-      this.remove.addEventListener("click", this.delete.bind(this))
-
-      this.item.classList.add("wishlish-item");
-      this.title.classList.add("wishlish-item__title");
-      this.wrap.classList.add("wishlish-item__image");
-      this.remove.classList.add("wishlish-item__remove");
-
-      this.wrap.append(this.img);
-      this.item.append(this.wrap);
-      this.title.append(this.remove);
-      this.item.append(this.title);
-
+      this.item = this.createItemElement();
       this.container.append(this.item);
+      this.removeBtn = this.container.querySelector(".wishlish-item__remove");
+      this.removeBtn.addEventListener("click", this.delete.bind(this));
+    }
+    createItemElement() {
+      const item = document.createElement("div");
+      item.classList.add("wishlish-item");
+      item.innerHTML = `
+        <a href="${this.obj.link}" class="wishlish-item__image">
+          <img src="${this.obj.featured_image}">
+        </a>
+        <h2 class="wishlish-item__title">
+          <span>${this.obj.title}</span>
+          <button data-id-product="${this.obj.id}" class="wishlish-item__remove">Remove</button>
+        </h2>
+      `;
+      return item;
     }
 
-    delete(event) {
-      const currentId = this.remove.getAttribute("data-id-product");
+    delete() {
+      const currentId = this.removeBtn.getAttribute("data-id-product").trim();
       const localObj = wishlistApp.getLocalStore();
       const removeItem = localObj.filter(el => Number(el.id) !== Number(currentId));
       wishlistApp.setLocalStore(removeItem);
       wishlistApp.renderItem();
       wishlistApp.productSnippet?.classList.remove("is-added");
+
+      const otherItems = document.querySelectorAll(`[data-selector="${currentId}"]`);
+
+      if (otherItems.length !== 0) {
+        otherItems.forEach(el => el.classList.remove("is-added"));
+      }
     }
   }
 
@@ -54,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
       this.overlay = this.container.querySelector(".wishlish-overlay");
 
       this.iconHeaderSnippet = document.querySelector(".header--wishlist-snipet");
+      this.count = document.querySelector(".count-wishlist-item")
       this.productSnippet = document.querySelector(".form-wishlist");
       this.iconSnippet = document.querySelectorAll(".wishlist-icon-btn");
 
@@ -177,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       this.checkIsEmpty();
+      this.count.innerHTML = Wishlist.counterItem;
     }
 
   }
