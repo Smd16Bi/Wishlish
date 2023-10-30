@@ -1,19 +1,19 @@
 {%- style -%}
+:root {
+  --width-container: {{settings.container_width_mobile}}%;
+  --bg-container: {{settings.bg_container}};
+  --opacity-lvl: {{settings.opacity_level}};
+  --color-text: {{settings.color_text}};
+  --font-size-text: {{settings.font_size_mobile}}px;
+  --font-size-heading: calc(var(--font-size-text) * {{settings.size_factor}});
+}
+@media(min-width: 768px) {
   :root {
-    --width-container: {{section.settings.container_width_mobile}}%;
-    --bg-container: {{section.settings.bg_container}};
-    --opacity-lvl: {{section.settings.opacity_level}};
-    --color-text: {{section.settings.color_text}};
-    --font-size-text: {{section.settings.font_size_mobile}}px;
-    --font-size-heading: calc(var(--font-size-text) * {{section.settings.size_factor}});
+  --font-size-text: {{settings.font_size_desktop}}px;
+  --font-size-heading: calc(var(--font-size-text) * {{settings.size_factor}});
+  --width-container: {{settings.container_width}}%;
   }
-  @media(min-width: 768px) {
-    :root {
-      --font-size-text: {{section.settings.font_size_desktop}}px;
-      --font-size-heading: calc(var(--font-size-text) * {{section.settings.size_factor}});
-      --width-container: {{section.settings.container_width}}%;
-    }
-  }
+}
 {%- endstyle -%}
 
 {{- "component-overlay-wishlish.css" | asset_url | stylesheet_tag -}}
@@ -22,25 +22,39 @@
   <div class="wishlish-overlay"> </div>
   <div class="wishlish-container wishlish-body">
     <div class="wishlish-header">
-      <h2>{{- section.settings.heading -}}</h2>
+      <h2>{{- settings.heading -}}</h2>
       <svg class="icon-close" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_1236_3660)">
-        <path d="M13.5 0.5L0.5 13.5" stroke="#000001" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M0.5 0.5L13.5 13.5" stroke="#000001" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.5 0.5L0.5 13.5" stroke="#000001" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M0.5 0.5L13.5 13.5" stroke="#000001" stroke-linecap="round" stroke-linejoin="round" />
         </g>
         <defs>
-        <clipPath id="clip0_1236_3660">
-        <rect width="14" height="14" fill="white"/>
-        </clipPath>
+          <clipPath id="clip0_1236_3660">
+            <rect width="14" height="14" fill="white" />
+          </clipPath>
         </defs>
-      </svg>  
+      </svg>
     </div>
 
     <div class="wishlish-empty">
-      <h3>{{section.settings.empty_text}}</h3>
+      <h3>{{settings.empty_text}}</h3>
     </div>
     <div class="wishlish-main"></div>
     <div class="wishlish-footer"></div>
+  </div>
+  <div class="wishlish-share">
+    <div class="wishlish-share-container"></div>
+    <template id="share-pop">
+      <div class="wishlish-share__item">
+        <a target="_blank" href="" class="wishlish-share__img">
+          <img src="" loading="lazy" alt="Share image">
+        </a>
+        <div class="wishlish-share__text">
+          <p class="wishlish-share__title"></p>
+          <button class="wishlish-share__btn"></button>
+        </div>
+      </div>
+    </template>
   </div>
 </div>
 
@@ -49,101 +63,6 @@
 
 {% schema %}
 {
-  "name": "Wishlish",
-  "settings": [
-    {
-      "type": "header",
-      "content": "General settings"
-    },
-    {
-      "type": "range",
-      "id": "container_width",
-      "label": "Container width for desktop",
-      "unit": "%",
-      "min": 30,
-      "max": 100,
-      "step": 1,
-      "default": 30
-    },
-    {
-      "type": "range",
-      "id": "container_width_mobile",
-      "label": "Container width for mobile",
-      "unit": "%",
-      "min": 50,
-      "max": 100,
-      "step": 1,
-      "default": 50
-    },
-    {
-      "type": "range",
-      "id": "opacity_level",
-      "label": "Opacity level for the inner container",
-      "unit": "%",
-      "min": 0.1,
-      "max": 1,
-      "step": 0.1,
-      "default": 0.1
-    },
-    {
-      "type": "color",
-      "id": "bg_container",
-      "label": "Background color for container",
-      "default": "#fff"
-    },
-    {
-      "type": "color",
-      "id": "color_text",
-      "label": "Color for text",
-      "default": "#000"
-    },
-    {
-      "type": "range",
-      "id": "font_size_desktop",
-      "label": "Font size for text desktop",
-      "unit": "px",
-      "min": 10,
-      "max": 30,
-      "step": 1,
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "size_factor",
-      "label": "Heading size factor",
-      "unit": ".",
-      "info": "All headings are increased or decreased proportionally.",
-      "min": 0.8,
-      "max": 2,
-      "step": 0.1,
-      "default": 1
-    },
-    {
-      "type": "range",
-      "id": "font_size_mobile",
-      "label": "Font size for text mobile",
-      "unit": "px",
-      "min": 10,
-      "max": 30,
-      "step": 1,
-      "default": 15
-    },
-    {
-      "type": "header",
-      "content": "Text settings"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Wishlist"
-    },
-    {
-      "type": "text",
-      "id": "empty_text",
-      "label": "Text when wishlist is empty",
-      "default": "Wishlist is empty"
-    }
-  ]
+"name": "Wishlish"
 }
 {% endschema %}

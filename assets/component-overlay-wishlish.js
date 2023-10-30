@@ -120,6 +120,11 @@ document.addEventListener("DOMContentLoaded", function () {
         this.setLocalStore(removeItem);
       };
 
+      if (!isIconSnipet && currentIconWishlist.querySelector("#text-btn")) {
+        const currentText = isAdd ? jsonObj.add_text : jsonObj.added_text;
+        currentIconWishlist.querySelector("#text-btn").innerHTML = currentText;
+      }
+
       currentIconWishlist.classList.toggle("is-added", !isAdd);
 
       this.checkIsEmpty();
@@ -139,15 +144,20 @@ document.addEventListener("DOMContentLoaded", function () {
     checkIsAdded(btn) {
       const isIconSnipet = btn ? true : false;
       const currentIconWishlist = isIconSnipet ? btn : this.productSnippet;
-      const { id } = JSON.parse(
+      const jsonObj = JSON.parse(
         isIconSnipet
           ? btn.querySelector("[data-json-product]").innerHTML
           : this.productSnippet.querySelector("#product-wishlish").innerHTML
       );
 
       const currentLocal = this.getLocalStore();
-      const isAdd = currentLocal.some(el => Number(el.id) === Number(id));
+      const isAdd = currentLocal.some(el => Number(el.id) === Number(jsonObj.id));
       currentIconWishlist.classList.toggle("is-added", isAdd);
+
+      if (!isIconSnipet && currentIconWishlist.querySelector("#text-btn")) {
+        const currentText = !isAdd ? jsonObj.add_text : jsonObj.added_text;
+        currentIconWishlist.querySelector("#text-btn").innerHTML = currentText;
+      }
     }
 
 
@@ -179,10 +189,95 @@ document.addEventListener("DOMContentLoaded", function () {
       this.count.innerHTML = Wishlist.counterItem;
     }
 
+    share() {
+      const encodedStringBtoA = btoa(localStorage.getItem("wislistapp"));
+      const shareLink = window.location.origin + "?share=" + encodedStringBtoA;
+      console.log(shareLink);
+    }
   }
+
+  class ShareWishList {
+    constructor(container) {
+      this.container = container;
+      this.wrapper = this.container.querySelector(".wishlish-share-container");
+      this.template = this.container.querySelector("#share-pop");
+
+      this.checkShareLink();
+    }
+
+    openShare() {
+      wishlistApp.container.classList.add("is-show-share");
+      document.body.classList.add("overflow-hidden");
+    }
+    closeShare() {
+      wishlistApp.container.classList.remove("is-show-share");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    checkShareLink() {
+      const isShare = window.location.search.includes("?share=");
+      if (!isShare) return;
+      const searchParam = window.location.search.replace("?share=", "");
+      const decodedStringAtoB = JSON.parse(atob(searchParam));
+      this.container.classList.add("is-show");
+      this.createShareItem(decodedStringAtoB)
+      this.openShare();
+    }
+
+    createShareItem(arrayItem) {
+      arrayItem.forEach(el => {
+        const isExist = this.existOnList(el.id);
+        const item = this.template.content.cloneNode(true);
+        
+        const link = item.querySelector(".wishlish-share__img");
+        const shareItem = item.querySelector(".wishlish-share__item");
+        const button = item.querySelector(".wishlish-share__btn");
+        const img = item.querySelector(".wishlish-share__img img");
+        const text = item.querySelector(".wishlish-share__title");
+
+        if (isExist) {
+          shareItem.classList.add("wishlish-share__item-exist")
+        }
+        if (!isExist) {
+          button.addEventListener("click", () => {
+            this.addItemShare(el);
+            button.innerHTML = "Added";
+            shareItem.classList.add("wishlish-share__item-exist")
+          })
+        }
+
+        button.textContent = isExist ? "Added" : "Add";
+        text.textContent = el.title;
+        link.href = el.link
+        img.src = el.featured_image;
+
+        this.wrapper.append(item);
+      })
+    }
+
+    addItemShare(obj) {
+      const { featured_image, title, id, link } = obj;
+      const item = {
+        featured_image,
+        title,
+        id,
+        link
+      }
+
+      const localObj = wishlistApp.getLocalStore();
+      const newItem = [...localObj, item];
+      wishlistApp.setLocalStore(newItem);
+    }
+
+    existOnList(id) {
+      return wishlistApp.getLocalStore().some(el => Number(el.id) === Number(id));
+    }
+  }
+
   const appWish = document.querySelector(".wishlish");
+  const shareWish = document.querySelector(".wishlish-share");
   const wishlistApp = new Wishlist(appWish);
+  const wishlistShare = new ShareWishList(shareWish);
   window.wishlistApp = wishlistApp;
-
-
+  window.wishlistShare = wishlistShare;
 })
