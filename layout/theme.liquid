@@ -337,5 +337,15 @@
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+
+    <script type="text/javascript">
+  window._mfq = window._mfq || [];
+  (function() {
+    var mf = document.createElement("script");
+    mf.type = "text/javascript"; mf.defer = true;
+    mf.src = "//cdn.mouseflow.com/projects/732fb432-21d8-4fe9-9e5e-2c909e46f461.js";
+    document.getElementsByTagName("head")[0].appendChild(mf);
+  })();
+</script>
   </body>
 </html>
