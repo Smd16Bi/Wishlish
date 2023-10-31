@@ -93,9 +93,11 @@
   background-color: #fff;
   border-radius: 25px;
   z-index: -1;
+  visibility: hidden;
 }
 
 .wishlish-share.is-show {
+  visibility: visible;
   z-index: 1;
   display: flex;
   align-items: center;

@@ -51,6 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
       this.footer = this.container.querySelector(".wishlish-footer");
       this.overlay = this.container.querySelector(".wishlish-overlay");
 
+      this.shareIcon = this.container.querySelector(".share-button-icon");
+      this.shareWrapperLink = this.container.querySelector(".share-button-link");
+      this.shareText = this.container.querySelector(".link-share");
+      this.shareButton = this.container.querySelector(".link-share-save");
+
       this.iconHeaderSnippet = document.querySelector(".header--wishlist-snipet");
       this.count = document.querySelector(".count-wishlist-item")
       this.productSnippet = document.querySelector(".form-wishlist");
@@ -63,6 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
       this.iconClose.addEventListener("click", this.close.bind(this));
       this.overlay.addEventListener("click", this.close.bind(this));
 
+      this.shareIcon.addEventListener("click", this.openShareTooltip.bind(this))
+      this.shareButton.addEventListener("click", this.share.bind(this))
 
       if (this.productSnippet) {
         this.checkIsAdded();
@@ -77,6 +84,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       this.renderItem();
+    }
+
+    openShareTooltip() {
+      this.shareWrapperLink.classList.add("is-open");
+      this.shareText.innerHTML = this.getShareLink();
+    }
+    closeShareTooltip() {
+      this.shareWrapperLink.classList.remove("is-open")
     }
 
 
@@ -189,10 +204,17 @@ document.addEventListener("DOMContentLoaded", function () {
       this.count.innerHTML = Wishlist.counterItem;
     }
 
-    share() {
+    getShareLink() {
       const encodedStringBtoA = btoa(localStorage.getItem("wislistapp"));
       const shareLink = window.location.origin + "?share=" + encodedStringBtoA;
-      console.log(shareLink);
+      return shareLink
+    }
+    share() {
+      this.shareText.innerHTML = "Link copied to clipboard"; 
+      navigator.clipboard.writeText(this.getShareLink());
+      setTimeout(() => {
+        this.closeShareTooltip();
+      }, 1000);
     }
   }
 
@@ -228,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
       arrayItem.forEach(el => {
         const isExist = this.existOnList(el.id);
         const item = this.template.content.cloneNode(true);
-        
+
         const link = item.querySelector(".wishlish-share__img");
         const shareItem = item.querySelector(".wishlish-share__item");
         const button = item.querySelector(".wishlish-share__btn");
