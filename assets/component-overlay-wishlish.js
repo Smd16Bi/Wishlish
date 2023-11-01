@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
       this.container.append(this.item);
       this.removeBtn = this.item.querySelector(".wishlish-item__remove");
       this.removeBtn.addEventListener("click", this.delete.bind(this));
+      
     }
     createItemElement() {
       const item = document.createElement("div");
