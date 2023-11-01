@@ -226,8 +226,10 @@ document.addEventListener("DOMContentLoaded", function () {
       this.container = container;
       this.wrapper = this.container.querySelector(".wishlish-share-container");
       this.template = this.container.querySelector("#share-pop");
+      this.close = this.wrapper.querySelector(".wishlish-share-close");
 
       this.checkShareLink();
+      this.close.addEventListener("click", this.closeShare);
     }
 
     openShare() {
@@ -237,6 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
     closeShare() {
       wishlistApp.container.classList.remove("is-show-share");
       document.body.classList.add("overflow-hidden");
+      window.location.href = "/";
     }
 
     checkShareLink() {
