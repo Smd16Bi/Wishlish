@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
       this.obj = obj;
       this.item = this.createItemElement();
       this.container.append(this.item);
-      this.removeBtn = this.container.querySelector(".wishlish-item__remove");
+      this.removeBtn = this.item.querySelector(".wishlish-item__remove");
       this.removeBtn.addEventListener("click", this.delete.bind(this));
     }
     createItemElement() {
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     delete() {
+      console.log("delete");
       const currentId = this.removeBtn.getAttribute("data-id-product").trim();
       const localObj = wishlistApp.getLocalStore();
       const removeItem = localObj.filter(el => Number(el.id) !== Number(currentId));
